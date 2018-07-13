@@ -42,6 +42,44 @@ inline std::vector<std::string> split(std::string const& str)
 }
 }; // namespace utils
 
+namespace detail {
+inline gate_kinds identify_gate_kind(std::string_view gate_label)
+{
+	switch (gate_label[0]) {
+	case 'H':
+		return gate_kinds::hadamard;
+
+	case 'S':
+	case 'P':
+		if (gate_label.size() == 2 && gate_label[1] == '*')
+			return gate_kinds::phase_dagger;
+		return gate_kinds::phase;
+
+	case 'T':
+		if (gate_label.size() == 2 && gate_label[1] == '*')
+			return gate_kinds::t_dagger;
+		return gate_kinds::t;
+
+	case 'X':
+		return gate_kinds::pauli_x;
+
+	case 'Y':
+		return gate_kinds::pauli_y;
+
+	case 'Z':
+		return gate_kinds::pauli_z;
+
+	default:
+		std::cout << "Unknown: " << gate_label << "\n";
+		break;
+	}
+	if (gate_label == "tof") {
+		return gate_kinds::cnot;
+	}
+	return gate_kinds::unknown;
+}
+}; // namespace detail
+
 class dotqc_reader {
 public:
 	virtual void on_qubit(std::string label) const
@@ -85,12 +123,12 @@ public:
 	{}
 };
 
-inline void dotqc_read(std::string const& path)
+inline void dotqc_read(std::string const& path, dotqc_reader const& reader)
 {
 	fs::path fpath(path);
 	if (fpath.extension() != ".qc") {
 		std::cerr << "[e] Unreconized file type: " << fpath.extension()
-		          << '\n';
+		<< '\n';
 	}
 	// Load the whole file into a buffer
 	std::ifstream input_file(fpath);
@@ -114,19 +152,19 @@ inline void dotqc_read(std::string const& path)
 			std::getline(buffer, line);
 			auto qubits = utils::split(line);
 			for (auto& label : qubits) {
-				std::cout << "Found qubit: " << label << '\n';
+				reader.on_qubit(label);
 			}
 		} else if (line[1] == 'i') {
 			std::getline(buffer, line);
 			auto inputs = utils::split(line);
 			for (auto& label : inputs) {
-				std::cout << "Found input: " << label << '\n';
+				reader.on_input(label);
 			}
 		} else if (line[1] == 'o') {
 			std::getline(buffer, line);
 			auto outputs = utils::split(line);
 			for (auto& label : outputs) {
-				std::cout << "Found output: " << label << '\n';
+				reader.on_output(label);
 			}
 		}
 	}
@@ -137,7 +175,7 @@ inline void dotqc_read(std::string const& path)
 			continue;
 		}
 		auto entries = utils::split(line);
-		auto gate = entries[0];
+		auto gate = detail::identify_gate_kind(entries[0]);
 		entries.erase(entries.begin());
 		switch (entries.size()) {
 		case 0:
@@ -145,15 +183,15 @@ inline void dotqc_read(std::string const& path)
 			break;
 
 		case 1:
-			std::cout << "Found single qubit gate: " << gate << '\n';
+			reader.on_gate(gate, entries[0]);
 			break;
 
 		case 2:
-			std::cout << "Found two qubit gate: " << gate << '\n';
+			reader.on_two_qubit_gate(gate, entries[0], entries[1]);
 			break;
 
 		default:
-			std::cout << "Found multiple qubit gate: " << gate << '\n';
+			reader.on_multiple_qubit_gate(gate, entries);
 			break;
 		}
 	}
