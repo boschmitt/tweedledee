@@ -5,6 +5,8 @@
 *-----------------------------------------------------------------------------*/
 #pragma once
 
+#include "../gate_kinds.hpp"
+
 #include <experimental/filesystem>
 #include <fstream>
 #include <iostream>
@@ -39,6 +41,49 @@ inline std::vector<std::string> split(std::string const& str)
 	return slipt_string;
 }
 }; // namespace utils
+
+class dotqc_reader {
+public:
+	virtual void on_qubit(std::string label) const
+	{
+		(void) label;
+	}
+
+	virtual void on_input(std::string label) const
+	{
+		(void) label;
+	}
+
+	virtual void on_output(std::string label) const
+	{
+		(void) label;
+	}
+
+	virtual void on_gate(gate_kinds kind, std::string qubit_label) const
+	{
+		(void) kind;
+		(void) qubit_label;
+	}
+
+	virtual void on_two_qubit_gate(gate_kinds kind,
+	                               std::string qubit0_label,
+	                               std::string qubit1_label) const
+	{
+		(void) kind;
+		(void) qubit0_label;
+		(void) qubit1_label;
+	}
+
+	virtual void on_multiple_qubit_gate(
+	    gate_kinds kind, std::vector<std::string> const& qubit_labels) const
+	{
+		(void) kind;
+		(void) qubit_labels;
+	}
+
+	virtual void on_end() const
+	{}
+};
 
 inline void dotqc_read(std::string const& path)
 {
