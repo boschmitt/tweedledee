@@ -1,3 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-000000.svg?longCache=true&style=flat-square)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/boschmitt/tweedledee.svg?branch=master)](https://travis-ci.org/boschmitt/tweedledee)
+[![License](https://img.shields.io/badge/license-MIT-000000.svg)](https://opensource.org/licenses/MIT)
 
 In the beginning there was only darkness.
