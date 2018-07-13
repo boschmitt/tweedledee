@@ -1,4 +1,4 @@
-# Distributed under the MIT License (See accompanying file /LICENSE )
+# Distributed under the MIT License (See accompanying file /LICENSE)
 # Author(s): Bruno Schmitt < bruno [at] oschmitt [dot] com >
 add_compile_options(
   -fno-rtti
