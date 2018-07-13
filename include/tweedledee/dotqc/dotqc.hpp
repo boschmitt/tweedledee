@@ -43,68 +43,71 @@ inline std::vector<std::string> split(std::string const& str)
 }; // namespace utils
 
 namespace detail {
-inline gate_kinds identify_gate_kind(std::string_view gate_label)
-{
-	switch (gate_label[0]) {
-	case 'H':
-		return gate_kinds::hadamard;
+struct identify_gate_kind {
+	gate_kinds operator()(std::string_view gate_label)
+	{
+		switch (gate_label[0]) {
+		case 'H':
+			return gate_kinds::hadamard;
 
-	case 'S':
-	case 'P':
-		if (gate_label.size() == 2 && gate_label[1] == '*')
-			return gate_kinds::phase_dagger;
-		return gate_kinds::phase;
+		case 'S':
+		case 'P':
+			if (gate_label.size() == 2 && gate_label[1] == '*')
+				return gate_kinds::phase_dagger;
+			return gate_kinds::phase;
 
-	case 'T':
-		if (gate_label.size() == 2 && gate_label[1] == '*')
-			return gate_kinds::t_dagger;
-		return gate_kinds::t;
+		case 'T':
+			if (gate_label.size() == 2 && gate_label[1] == '*')
+				return gate_kinds::t_dagger;
+			return gate_kinds::t;
 
-	case 'X':
-		return gate_kinds::pauli_x;
+		case 'X':
+			return gate_kinds::pauli_x;
 
-	case 'Y':
-		return gate_kinds::pauli_y;
+		case 'Y':
+			return gate_kinds::pauli_y;
 
-	case 'Z':
-		return gate_kinds::pauli_z;
+		case 'Z':
+			return gate_kinds::pauli_z;
 
-	default:
-		break;
+		default:
+			break;
+		}
+		if (gate_label == "tof") {
+			return gate_kinds::cnot;
+		}
+		return gate_kinds::unknown;
 	}
-	if (gate_label == "tof") {
-		return gate_kinds::cnot;
-	}
-	return gate_kinds::unknown;
-}
+};
 }; // namespace detail
 
+template<typename GateKind = gate_kinds>
 class dotqc_reader {
 public:
-	virtual void on_qubit(std::string label) const
+	virtual void on_qubit(std::string label)
 	{
 		(void) label;
 	}
 
-	virtual void on_input(std::string label) const
+	virtual void on_input(std::string label)
 	{
 		(void) label;
 	}
 
-	virtual void on_output(std::string label) const
+	virtual void on_output(std::string label)
 	{
 		(void) label;
 	}
 
-	virtual void on_gate(gate_kinds kind, std::string qubit_label) const
+	virtual void on_gate(GateKind kind, std::string qubit_label)
 	{
 		(void) kind;
 		(void) qubit_label;
 	}
 
-	virtual void on_two_qubit_gate(gate_kinds kind,
+	virtual void on_two_qubit_gate(GateKind kind,
 	                               std::string qubit0_label,
-	                               std::string qubit1_label) const
+	                               std::string qubit1_label)
 	{
 		(void) kind;
 		(void) qubit0_label;
@@ -112,22 +115,24 @@ public:
 	}
 
 	virtual void on_multiple_qubit_gate(
-	    gate_kinds kind, std::vector<std::string> const& qubit_labels) const
+	    GateKind kind, std::vector<std::string> const& qubit_labels)
 	{
 		(void) kind;
 		(void) qubit_labels;
 	}
 
-	virtual void on_end() const
+	virtual void on_end()
 	{}
 };
 
-inline void dotqc_read(std::string const& path, dotqc_reader const& reader)
+template<typename GateKind, class Fn = detail::identify_gate_kind>
+inline void dotqc_read(std::string const& path, dotqc_reader<GateKind>& reader,
+                       Fn&& fn = {})
 {
 	fs::path fpath(path);
 	if (fpath.extension() != ".qc") {
 		std::cerr << "[e] Unreconized file type: " << fpath.extension()
-		<< '\n';
+		          << '\n';
 	}
 	// Load the whole file into a buffer
 	std::ifstream input_file(fpath);
@@ -177,7 +182,7 @@ inline void dotqc_read(std::string const& path, dotqc_reader const& reader)
 		if (entries[0] == "BEGIN" || entries[0] == "END") {
 			continue;
 		}
-		auto gate = detail::identify_gate_kind(entries[0]);
+		auto gate = fn(entries[0]);
 		entries.erase(entries.begin());
 		switch (entries.size()) {
 		case 0:
