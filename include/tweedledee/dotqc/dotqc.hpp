@@ -70,7 +70,6 @@ inline gate_kinds identify_gate_kind(std::string_view gate_label)
 		return gate_kinds::pauli_z;
 
 	default:
-		std::cout << "Unknown: " << gate_label << "\n";
 		break;
 	}
 	if (gate_label == "tof") {
@@ -175,6 +174,9 @@ inline void dotqc_read(std::string const& path, dotqc_reader const& reader)
 			continue;
 		}
 		auto entries = utils::split(line);
+		if (entries[0] == "BEGIN" || entries[0] == "END") {
+			continue;
+		}
 		auto gate = detail::identify_gate_kind(entries[0]);
 		entries.erase(entries.begin());
 		switch (entries.size()) {
