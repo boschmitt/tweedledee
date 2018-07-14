@@ -22,5 +22,5 @@ INTERFACE
 # Examples
 # =============================================================================
 if(TWEEDLEDEE_EXAMPLES)
-  add_subdirectory(examples EXCLUDE_FROM_ALL)
+  add_subdirectory(examples)
 endif()
