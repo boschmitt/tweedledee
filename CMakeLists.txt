@@ -1,5 +1,5 @@
 # Distributed under the MIT License (See accompanying file /LICENSE )
-# Author(s): Bruno Schmitt < bruno [at] oschmitt [dot] com >
+# Author(s): Bruno Schmitt
 # CMake build : tweedledee library
 cmake_minimum_required(VERSION 3.8)
 project(tweedledee LANGUAGES CXX)
