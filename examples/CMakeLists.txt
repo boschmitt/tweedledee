@@ -16,3 +16,9 @@ add_dependencies(examples hello_world)
 add_executable(dotqc "dotqc.cpp")
 target_link_libraries(dotqc tweedledee)
 add_dependencies(examples dotqc)
+
+# Quil
+# =============================================================================
+add_executable(quil-parser "quil.cpp")
+target_link_libraries(quil-parser tweedledee)
+add_dependencies(examples quil-parser)
