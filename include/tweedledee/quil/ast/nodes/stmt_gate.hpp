@@ -49,10 +49,12 @@ public:
 		std::unique_ptr<stmt_gate> statement_;
 	};
 
+	std::string identifier;
+
 private:
 	stmt_gate(uint32_t location, std::string_view identifier)
 	    : ast_node(location)
-	    , identifier_(identifier)
+	    , identifier(identifier)
 	{}
 
 	ast_node_kinds do_get_kind() const override
@@ -64,12 +66,8 @@ private:
 	{
 		using namespace rang;
 		out << style::bold << fgB::magenta << "stmt_gate " << style::reset
-		    << fgB::cyan << identifier_ << fg::reset;
+		    << fgB::cyan << identifier << fg::reset;
 	}
-
-private:
-	std::string identifier_;
-
 };
 
 } // namespace quil

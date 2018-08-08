@@ -9,7 +9,7 @@
 
 #include <memory>
 #include <string_view>
-#include <unordered_map>
+#include <unordered_set>
 
 namespace tweedledee {
 namespace quil {
@@ -17,6 +17,7 @@ namespace quil {
 // This implements semantic analysis and AST building.
 class semantic {
 	program::builder program_;
+	std::unordered_set<std::string_view> qubits_;
 
 public:
 	semantic() = default;
@@ -31,8 +32,16 @@ public:
 		program_.add_child(std::move(stmt_gate));
 	}
 
+	void on_qubit(std::string_view qubit_id)
+	{
+		qubits_.insert(qubit_id);
+	}
+
 	std::unique_ptr<program> finish()
 	{
+		for (auto id : qubits_) {
+			program_.add_qubit(id);
+		}
 		return program_.finish();
 	}
 };

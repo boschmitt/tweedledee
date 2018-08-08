@@ -140,8 +140,8 @@ private:
 			}
 		}
 		do {
-			auto qubit_id
-			    = expect_and_consume_token(token_kinds::integer);
+			auto qubit_id = expect_and_consume_token(token_kinds::integer);
+			semantic_.on_qubit(qubit_id);
 			auto qubit = qubit::build(qubit_id.location, qubit_id);
 			stmt_builder.add_child(std::move(qubit));
 			if (current_token_.kind == token_kinds::new_line) {

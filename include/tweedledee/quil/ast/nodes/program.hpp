@@ -6,6 +6,8 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+#include <string>
 
 #include "../ast_node.hpp"
 #include "../ast_node_kinds.hpp"
@@ -25,6 +27,9 @@ public:
 		void add_child(std::unique_ptr<ast_node> child)
 		{ program_->add_child(std::move(child)); }
 
+		void add_qubit(std::string_view qubit_id)
+		{ program_->qubits.emplace_back(qubit_id); }
+
 		program& get()
 		{ return *program_; }
 
@@ -34,6 +39,8 @@ public:
 	private:
 		std::unique_ptr<program> program_;
 	};
+
+	std::vector<std::string> qubits;
 
 private:
 	program()

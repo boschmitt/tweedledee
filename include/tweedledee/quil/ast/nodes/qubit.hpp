@@ -24,17 +24,19 @@ namespace quil {
 class qubit final : public ast_node {
 public:
 	static std::unique_ptr<qubit> build(uint32_t location,
-	                                    uint32_t index)
+	                                    std::string_view label)
 	{
 		auto result = std::unique_ptr<qubit>(
-			new qubit(location, index));
+			new qubit(location, label));
 		return result;
 	}
 
+	std::string label;
+
 private:
-	qubit(uint32_t location, uint32_t index)
+	qubit(uint32_t location, std::string_view label)
 		: ast_node(location)
-		, index_(index)
+		, label(label)
 	{ }
 
 	ast_node_kinds do_get_kind() const override
@@ -42,11 +44,8 @@ private:
 
 	void do_print(std::ostream& out) const override
 	{
-		out << "qubit " << index_;
+		out << "qubit " << label;
 	}
-
-private:
-	uint32_t index_;
 };
 
 } // namespace quil
