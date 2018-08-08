@@ -17,7 +17,8 @@ add_library(tweedledee INTERFACE)
 target_link_libraries(tweedledee INTERFACE c++experimental)
 target_include_directories(tweedledee
 INTERFACE
-  ${PROJECT_SOURCE_DIR}/include)
+  ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/libs)
 
 # Examples
 # =============================================================================
