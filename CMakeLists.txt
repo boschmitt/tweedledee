@@ -11,10 +11,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 # =============================================================================
 option(TWEEDLEDEE_EXAMPLES "Build examples" OFF)
 
+# Libs
+# =============================================================================
+add_subdirectory(libs)
+
 # Library
 # =============================================================================
 add_library(tweedledee INTERFACE)
-target_link_libraries(tweedledee INTERFACE c++experimental)
+target_link_libraries(tweedledee INTERFACE rang)
 target_include_directories(tweedledee
 INTERFACE
   ${PROJECT_SOURCE_DIR}/include
