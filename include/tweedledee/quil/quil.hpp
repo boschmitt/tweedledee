@@ -32,4 +32,4 @@ inline std::unique_ptr<program> quil_read_file(std::string const& path)
 	return semantic.finish();
 }
 
-}; // namespace tweedledee::quil
+} // namespace tweedledee::quil
