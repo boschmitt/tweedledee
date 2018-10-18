@@ -37,17 +37,12 @@ public:
 		(void) qubit_label;
 	}
 
-	void on_two_qubit_gate(gate_kinds kind, std::string qubit0_label, std::string qubit1_label)
-	{
-		std::cout << "Found two qubit gate: " << gate_name(kind) << " gate\n";
-		(void) qubit0_label;
-		(void) qubit1_label;
-	}
-
-	void on_multiple_qubit_gate(gate_kinds kind, std::vector<std::string> const& qubit_labels)
+	void on_gate(gate_kinds kind, std::vector<std::string> const& controls,
+	             std::vector<std::string> const& targets)
 	{
 		std::cout << "Found multiple qubit gate: " << gate_name(kind) << " gate\n";
-		(void) qubit_labels;
+		(void) controls;
+		(void) targets;
 	}
 
 	void on_end()

@@ -96,25 +96,18 @@ public:
 		(void) label;
 	}
 
-	virtual void on_gate(GateKind kind, std::string qubit_label)
+	virtual void on_gate(GateKind kind, std::string const& target)
 	{
 		(void) kind;
-		(void) qubit_label;
+		(void) target;
 	}
 
-	virtual void on_two_qubit_gate(GateKind kind, std::string qubit0_label,
-	                               std::string qubit1_label)
+	virtual void on_gate(GateKind kind, std::vector<std::string> const& controls,
+	                     std::vector<std::string> const& targets)
 	{
 		(void) kind;
-		(void) qubit0_label;
-		(void) qubit1_label;
-	}
-
-	virtual void on_multiple_qubit_gate(GateKind kind,
-	                                    std::vector<std::string> const& qubit_labels)
-	{
-		(void) kind;
-		(void) qubit_labels;
+		(void) controls;
+		(void) targets;
 	}
 
 	virtual void on_end()
@@ -182,12 +175,10 @@ inline void dotqc_read(std::string const& path, dotqc_reader<GateKind>& reader, 
 			reader.on_gate(gate, entries[0]);
 			break;
 
-		case 2:
-			reader.on_two_qubit_gate(gate, entries[0], entries[1]);
-			break;
-
 		default:
-			reader.on_multiple_qubit_gate(gate, entries);
+			reader.on_gate(gate,
+			               std::vector<std::string>(entries.begin(), entries.end() - 1),
+			               std::vector({entries.back()}));
 			break;
 		}
 	}

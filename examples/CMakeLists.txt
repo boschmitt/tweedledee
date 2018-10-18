@@ -8,17 +8,11 @@ add_compile_options(
 
 add_custom_target(examples COMMENT "Build all examples.")
 
-add_executable(hello_world "hello_world.cpp")
-add_dependencies(examples hello_world)
+file(GLOB FILENAMES *.cpp)
 
-# DotQC
-# =============================================================================
-add_executable(dotqc "dotqc.cpp")
-target_link_libraries(dotqc tweedledee)
-add_dependencies(examples dotqc)
-
-# Quil
-# =============================================================================
-add_executable(quil-parser "quil.cpp")
-target_link_libraries(quil-parser tweedledee)
-add_dependencies(examples quil-parser)
+foreach(filename ${FILENAMES})
+  get_filename_component(basename ${filename} NAME_WE)
+  add_executable(${basename} ${filename})
+  target_link_libraries(${basename} PUBLIC tweedledee)
+  add_dependencies(examples ${basename})
+endforeach()
