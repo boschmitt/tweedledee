@@ -1,8 +1,9 @@
-/*------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------
 | This file is distributed under the MIT License.
 | See accompanying file /LICENSE for details.
 | Author(s): Bruno Schmitt
-*-----------------------------------------------------------------------------*/
+*------------------------------------------------------------------------------------------------*/
+
 #include "tweedledee/dotqc/dotqc.hpp"
 #include "tweedledee/gate_kinds.hpp"
 
@@ -32,26 +33,20 @@ public:
 
 	void on_gate(gate_kinds kind, std::string qubit_label)
 	{
-		std::cout << "Found single qubit gate: " << gate_name(kind)
-		          << " gate\n";
+		std::cout << "Found single qubit gate: " << gate_name(kind) << " gate\n";
 		(void) qubit_label;
 	}
 
-	void on_two_qubit_gate(gate_kinds kind, std::string qubit0_label,
-	                       std::string qubit1_label)
+	void on_two_qubit_gate(gate_kinds kind, std::string qubit0_label, std::string qubit1_label)
 	{
-		std::cout << "Found two qubit gate: " << gate_name(kind)
-		          << " gate\n";
+		std::cout << "Found two qubit gate: " << gate_name(kind) << " gate\n";
 		(void) qubit0_label;
 		(void) qubit1_label;
 	}
 
-	void
-	on_multiple_qubit_gate(gate_kinds kind,
-	                       std::vector<std::string> const& qubit_labels)
+	void on_multiple_qubit_gate(gate_kinds kind, std::vector<std::string> const& qubit_labels)
 	{
-		std::cout << "Found multiple qubit gate: " << gate_name(kind)
-		          << " gate\n";
+		std::cout << "Found multiple qubit gate: " << gate_name(kind) << " gate\n";
 		(void) qubit_labels;
 	}
 

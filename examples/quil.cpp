@@ -1,10 +1,11 @@
-/*------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------
 | This file is distributed under the MIT License.
 | See accompanying file /LICENSE for details.
 | Author(s): Bruno Schmitt
-*-----------------------------------------------------------------------------*/
-#include "tweedledee/quil/ast/visitor.hpp"
+*------------------------------------------------------------------------------------------------*/
+
 #include "tweedledee/quil/quil.hpp"
+#include "tweedledee/quil/ast/visitor.hpp"
 
 #include <iostream>
 

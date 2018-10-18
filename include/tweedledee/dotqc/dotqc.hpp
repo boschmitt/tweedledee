@@ -1,14 +1,15 @@
-/*------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------
 | This file is distributed under the MIT License.
 | See accompanying file /LICENSE for details.
 | Author(s): Bruno Schmitt
-*-----------------------------------------------------------------------------*/
+*------------------------------------------------------------------------------------------------*/
 #pragma once
 
 #include "../gate_kinds.hpp"
 
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -32,12 +33,11 @@ inline std::vector<std::string> split(std::string const& str)
 {
 	std::vector<std::string> slipt_string;
 	std::istringstream iss(str);
-	std::copy(std::istream_iterator<std::string>(iss),
-	          std::istream_iterator<std::string>(),
+	std::copy(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>(),
 	          std::back_inserter(slipt_string));
 	return slipt_string;
 }
-}; // namespace utils
+} // namespace utils
 
 namespace detail {
 struct identify_gate_kind {
@@ -76,7 +76,7 @@ struct identify_gate_kind {
 		return gate_kinds::unknown;
 	}
 };
-}; // namespace detail
+} // namespace detail
 
 template<typename GateKind = gate_kinds>
 class dotqc_reader {
@@ -110,9 +110,8 @@ public:
 		(void) qubit1_label;
 	}
 
-	virtual void
-	on_multiple_qubit_gate(GateKind kind,
-	                       std::vector<std::string> const& qubit_labels)
+	virtual void on_multiple_qubit_gate(GateKind kind,
+	                                    std::vector<std::string> const& qubit_labels)
 	{
 		(void) kind;
 		(void) qubit_labels;
@@ -123,8 +122,7 @@ public:
 };
 
 template<typename GateKind, class Fn = detail::identify_gate_kind>
-inline void dotqc_read(std::string const& path, dotqc_reader<GateKind>& reader,
-                       Fn&& fn = {})
+inline void dotqc_read(std::string const& path, dotqc_reader<GateKind>& reader, Fn&& fn = {})
 {
 	// Load the whole file into a buffer
 	std::ifstream input_file(path);
