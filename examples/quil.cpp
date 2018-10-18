@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	if (argc < 2) {
 		std::cerr << "Input file not specified.\n";
 	}
-	auto program = quil_read_file(argv[1]);
+	auto program = quil_read_from_file(argv[1]);
 	std::cout << "Num qubits: " << program->qubits.size() << '\n';
 	print_ast(std::cout, *program);
 }
