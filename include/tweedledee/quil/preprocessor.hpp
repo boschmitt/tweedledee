@@ -50,7 +50,6 @@ public:
 		if (current_lexer_ != nullptr) {
 			lexer_stack_.push_back(std::move(current_lexer_));
 		}
-		lexer_stack_.push_back(std::move(current_lexer_));
 		current_lexer_ = std::make_unique<lexer>(source->offset(), source->content());
 	}
 
