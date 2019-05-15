@@ -34,7 +34,7 @@ public:
 	source* add_target_file(const std::string_view file_path)
 	{
 		auto temp = path_;
-		if (not path_.empty()) {
+		if (!path_.empty()) {
 			temp.append(file_path);
 		} else {
 			auto const pos = file_path.find_last_of('/');

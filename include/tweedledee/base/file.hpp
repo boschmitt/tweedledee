@@ -11,6 +11,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <optional>
 
 namespace tweedledee {
 namespace detail {
@@ -25,7 +26,7 @@ inline std::string extract_name_from_path(const std::string& file_path)
 	}
 }
 
-inline std::string load_content(const std::string& file_path)
+inline std::optional<std::string> load_content(const std::string& file_path)
 {
 	std::string content;
 	// Don't accept a 'string_view' as parameter :(
@@ -39,8 +40,7 @@ inline std::string load_content(const std::string& file_path)
 		input_file.close();
 		return content;
 	}
-	std::cerr << "[error] No such file: " << file_path << '\n';
-	return content;
+	return std::nullopt;
 }
 } // namespace detail
 
@@ -53,10 +53,10 @@ public:
 	{
 		auto name = detail::extract_name_from_path(file_path);
 		auto content = detail::load_content(file_path);
-		if (content.empty()) {
-			return nullptr;
+		if (content) {
+			return std::unique_ptr<file>(new file(name, content.value(), offset));
 		}
-		return std::unique_ptr<file>(new file(name, content, offset));
+		return nullptr;
 	}
 
 	std::string_view name() const override

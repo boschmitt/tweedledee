@@ -19,9 +19,9 @@ namespace quil {
  */
 class expr_real final : public ast_node {
 public:
-	static std::unique_ptr<expr_real> build(uint32_t location, float value)
+	static std::unique_ptr<expr_real> build(uint32_t location, float value, bool imaginary)
 	{
-		auto result = std::unique_ptr<expr_real>(new expr_real(location, value));
+		auto result = std::unique_ptr<expr_real>(new expr_real(location, value, imaginary));
 		return result;
 	}
 
@@ -31,9 +31,10 @@ public:
 	}
 
 private:
-	expr_real(uint32_t location, float value)
+	expr_real(uint32_t location, float value, bool imaginary)
 	    : ast_node(location)
 	    , value_(value)
+	    , imaginary_(imaginary)
 	{}
 
 	ast_node_kinds do_get_kind() const override
@@ -50,6 +51,7 @@ private:
 
 private:
 	float value_;
+	bool imaginary_;
 };
 
 } // namespace quil

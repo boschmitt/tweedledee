@@ -5,6 +5,7 @@
 *------------------------------------------------------------------------------------------------*/
 #pragma once
 
+#include "../ast_context.hpp"
 #include "../ast_node.hpp"
 #include "../ast_node_kinds.hpp"
 
@@ -20,42 +21,32 @@ class stmt_gate
 public:
 	class builder {
 	public:
-		explicit builder(std::uint32_t location)
-		    : statement_(new stmt_gate(location))
+		explicit builder(ast_context* ctx, uint32_t location)
+		    : statement_(new (*ctx) stmt_gate(location))
 		{}
 
-		void add_child(std::unique_ptr<ast_node> child)
+		void add_child(ast_node* child)
 		{
-			statement_->add_child(std::move(child));
+			statement_->add_child(child);
 		}
 
-		stmt_gate& get()
+		stmt_gate* finish()
 		{
-			return *statement_;
-		}
-
-		std::unique_ptr<stmt_gate> finish()
-		{
-			return std::move(statement_);
+			return statement_;
 		}
 
 	private:
-		std::unique_ptr<stmt_gate> statement_;
+		stmt_gate* statement_;
 	};
 
 private:
-	stmt_gate(std::uint32_t location)
+	stmt_gate(uint32_t location)
 	    : ast_node(location)
 	{}
 
 	ast_node_kinds do_get_kind() const override
 	{
 		return ast_node_kinds::stmt_gate;
-	}
-
-	void do_print(std::ostream& out) const override
-	{
-		out << "stmt_gate\n";
 	}
 };
 

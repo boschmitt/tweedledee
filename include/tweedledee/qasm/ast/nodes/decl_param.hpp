@@ -5,6 +5,7 @@
 *------------------------------------------------------------------------------------------------*/
 #pragma once
 
+#include "../ast_context.hpp"
 #include "../ast_node.hpp"
 #include "../ast_node_kinds.hpp"
 
@@ -14,35 +15,29 @@
 namespace tweedledee {
 namespace qasm {
 
-// This represents a register (quantum or classical) declaration
+// This represents a variable parameter in a gate declaration (`decl_gate`)
 class decl_param final : public ast_node {
 public:
-	static std::unique_ptr<decl_param> build(std::uint32_t location, std::string_view identifier)
+	static decl_param* build(ast_context* ctx, uint32_t location, std::string_view identifier)
 	{
-		auto result = std::unique_ptr<decl_param>(
-		    new decl_param(location, std::move(identifier)));
+		auto result = new (*ctx) decl_param(location, identifier);
 		return result;
 	}
 
-	std::string identifier() const
+	std::string_view identifier() const
 	{
 		return identifier_;
 	}
 
 private:
-	decl_param(std::uint32_t location, std::string_view identifier)
+	decl_param(uint32_t location, std::string_view identifier)
 	    : ast_node(location)
-	    , identifier_(std::move(identifier))
+	    , identifier_(identifier)
 	{}
 
 	ast_node_kinds do_get_kind() const override
 	{
 		return ast_node_kinds::decl_param;
-	}
-
-	void do_print(std::ostream& out) const override
-	{
-		out << "decl_param " << identifier_ << "\n";
 	}
 
 private:

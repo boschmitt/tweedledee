@@ -5,6 +5,7 @@
 *------------------------------------------------------------------------------------------------*/
 #pragma once
 
+#include "../ast_context.hpp"
 #include "../ast_node.hpp"
 #include "../ast_node_kinds.hpp"
 
@@ -14,25 +15,28 @@
 namespace tweedledee {
 namespace qasm {
 
-enum class RegType : unsigned short {
-	quantum,
-	classical,
+enum class register_type : unsigned short {
+	classical = 0,
+	quantum = 1,
 };
 
 // This represents a register (quantum or classical) declaration
 class decl_register final : public ast_node {
+private:
+	//Configure bits
+	enum {
+		is_quantum_ = 0
+	};
 public:
-	static std::unique_ptr<decl_register> build(std::uint32_t location, RegType type,
-	                                            std::string_view identifier, std::uint32_t size)
+	static decl_register* build(ast_context* ctx, uint32_t location, register_type type,
+	                            std::string_view identifier, uint32_t size)
 	{
-		auto result = std::unique_ptr<decl_register>(
-		    new decl_register(location, type, std::move(identifier), size));
-		return result;
+		return new (*ctx) decl_register(location, type, identifier, size);
 	}
 
-	RegType type() const
+	bool is_quantum() const
 	{
-		return type_;
+		return ((this->config_bits_ >> is_quantum_) & 1) == 1;
 	}
 
 	std::string_view identifier() const
@@ -40,34 +44,29 @@ public:
 		return identifier_;
 	}
 
-	std::uint32_t size() const
+	uint32_t size() const
 	{
 		return size_;
 	}
 
 private:
-	decl_register(std::uint32_t location, RegType type, std::string_view identifier,
-	              std::uint32_t size)
+	decl_register(uint32_t location, register_type type, std::string_view identifier,
+	              uint32_t size)
 	    : ast_node(location)
-	    , type_(type)
-	    , identifier_(identifier)
 	    , size_(size)
-	{}
+	    , identifier_(identifier)
+	{
+		this->config_bits_ |= (static_cast<int>(type) << is_quantum_);
+	}
 
 	ast_node_kinds do_get_kind() const override
 	{
 		return ast_node_kinds::decl_register;
 	}
 
-	void do_print(std::ostream& out) const override
-	{
-		out << "decl_register " << identifier_ << "\n";
-	}
-
 private:
-	RegType type_;
+	uint32_t size_;
 	std::string identifier_;
-	std::uint32_t size_;
 };
 
 } // namespace qasm

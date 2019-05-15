@@ -17,6 +17,12 @@
 namespace tweedledee {
 namespace quil {
 
+enum class gate_modifiers : unsigned short {
+	controlled,
+	dagger,
+	none,
+};
+
 /*! \brief Gate statement (stmt) AST node
  */
 class stmt_gate
@@ -25,8 +31,9 @@ class stmt_gate
 public:
 	class builder {
 	public:
-		explicit builder(uint32_t location, std::string_view identifier)
-		    : statement_(new stmt_gate(location, identifier))
+		explicit builder(uint32_t location, std::string_view identifier,
+		                 gate_modifiers modifier = gate_modifiers::none)
+		    : statement_(new stmt_gate(location, identifier, modifier))
 		{}
 
 		void add_child(std::unique_ptr<ast_node> child)
@@ -49,11 +56,13 @@ public:
 	};
 
 	std::string identifier;
+	gate_modifiers modifier;
 
 private:
-	stmt_gate(uint32_t location, std::string_view identifier)
+	stmt_gate(uint32_t location, std::string_view identifier, gate_modifiers modifier_)
 	    : ast_node(location)
 	    , identifier(identifier)
+	    , modifier(modifier_)
 	{}
 
 	ast_node_kinds do_get_kind() const override

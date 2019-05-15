@@ -35,6 +35,11 @@ public:
 		return token_name(kind);
 	}
 
+	// uint32_t location() const
+	// {
+	// 	return location;
+	// }
+
 	bool is(token_kinds k) const
 	{
 		return kind == k;

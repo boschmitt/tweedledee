@@ -18,7 +18,7 @@ add_subdirectory(libs)
 # Library
 # =============================================================================
 add_library(tweedledee INTERFACE)
-target_link_libraries(tweedledee INTERFACE rang)
+target_link_libraries(tweedledee INTERFACE fmt rang spdlog)
 target_include_directories(tweedledee
 INTERFACE
   ${PROJECT_SOURCE_DIR}/include

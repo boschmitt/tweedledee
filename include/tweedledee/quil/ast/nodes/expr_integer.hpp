@@ -19,9 +19,9 @@ namespace quil {
  */
 class expr_integer final : public ast_node {
 public:
-	static std::unique_ptr<expr_integer> build(uint32_t location, int32_t value)
+	static std::unique_ptr<expr_integer> build(uint32_t location, int32_t value, bool imaginary)
 	{
-		auto result = std::unique_ptr<expr_integer>(new expr_integer(location, value));
+		auto result = std::unique_ptr<expr_integer>(new expr_integer(location, value, imaginary));
 		return result;
 	}
 
@@ -31,9 +31,10 @@ public:
 	}
 
 private:
-	expr_integer(uint32_t location, int32_t value)
+	expr_integer(uint32_t location, int32_t value, bool imaginary)
 	    : ast_node(location)
 	    , value_(value)
+	    , imaginary_(imaginary)
 	{}
 
 	ast_node_kinds do_get_kind() const override
@@ -50,6 +51,7 @@ private:
 
 private:
 	int32_t value_;
+	bool imaginary_;
 };
 
 } // namespace quil
